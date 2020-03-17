@@ -5,19 +5,19 @@
 #PBS -m abe
 
 # prepare path
-source $conda_base/etc/profile.d/conda.sh
+source "${conda_base}/etc/profile.d/conda.sh"
 
 # launch environment
 conda activate pbs
-conda activate --stack "$env_name"
+conda activate --stack "${env_name}"
 
 # Setup dask worker
 SCHEDULER=$HOME/scheduler.json
 
 # each worker has a nanny
-nprocs2=$(( 2*$nprocs )) 
-mpirun -n $nprocs2 dask-mpi 
-    --nthreads $nthreads \
+nprocs2=$(( 2*${nprocs} )) 
+mpirun -n ${nprocs2} dask-mpi 
+    --nthreads ${nthreads} \
     --memory-limit 16e9 \
     # network interface
 #    --interface ib0 \

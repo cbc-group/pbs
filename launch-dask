@@ -15,12 +15,8 @@ display_help() {
 queue="gpu"
 nthreads=4
 nprocs=1 # each gpu can only occupied by 1 process
-while getopts 'hq:t:p:' option; do
+while getopts ':hq:t:p:' option; do
     case "$option" in
-        h)  # help
-            display_help
-            exit
-            ;;
         q)  # select a non-default queue
             queue="$OPTARG"
             ;;
@@ -30,6 +26,8 @@ while getopts 'hq:t:p:' option; do
         p)  # number of processes per worker
             nprocs=$OPTARG
             ;;
+
+        # by having ":...", we want to handle errors ourselves
         :)  # missing argument
             printf "missing argument for -%s\n" "$OPTARG" >&2
             display_help
@@ -40,10 +38,25 @@ while getopts 'hq:t:p:' option; do
             display_help
             exit 1
             ;;
+
+        # help or blank
+        h | *)  
+            display_help
+            exit 0
+            ;;
     esac
 done
 shift $((OPTIND - 1))
 
+if [ "$#" -ne 2 ]; then
+    echo "missing positional arguments"
+    display_help
+    exit 1
+fi
+
+echo "nt=$nthreads,np=$nprocs"
+
+[]
 n_workers=${1}
 echo "Launching Dask scheduler"
 s=`qsub launch-dask-scheduler.sh` # launch on a cpu node

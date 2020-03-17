@@ -7,9 +7,8 @@
 #PBS -j oe
 #PBS -m abe
 
-# Setup Environment
-module purge
-source activate pangeo
+# setup conda environment
+conda activate pangeo
 
 # Setup dask worker
 SCHEDULER=/glade/scratch/$USER/scheduler.json

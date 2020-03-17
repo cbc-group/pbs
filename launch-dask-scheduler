@@ -12,9 +12,8 @@
 # >>> from dask.distributed import Client
 # >>> client = Client(scheduler_file='~/scheduler.json')
 
-# Setup Environment
-module purge
-source activate pangeo
+# setup conda environment
+conda activate pangeo
 
 SCHEDULER=/glade/scratch/$USER/scheduler.json
 rm -f $SCHEDULER

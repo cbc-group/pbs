@@ -60,7 +60,7 @@ s=`qsub -v conda_base=$conda_base launch-dask-scheduler.sh` # launch on a cpu no
 sjob=${s%.*}
 echo ${s}
 
-conda_base=${conda info --base}
+conda_base=`conda info --base`
 
 env_name=${2}
 echo "Launching Dask workers (${n_workers}) with \"$env_name\""

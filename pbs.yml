@@ -1,0 +1,11 @@
+# basic requirements for a dask setup
+
+name: pbs
+
+channels:
+  - default
+  - conda-forge
+
+dependencies:
+  - python=3.7
+  - dask-mpi

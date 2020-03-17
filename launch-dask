@@ -13,7 +13,9 @@ display_help() {
 }
 
 queue="gpu"
-while getopts 'hq:' option; do
+nt=4
+np=8
+while getopts 'hq:t:p:' option; do
     case "$option" in
         h)  # help
             display_help
@@ -21,6 +23,12 @@ while getopts 'hq:' option; do
             ;;
         q)  # select a non-default queue
             queue="$OPTARG"
+            ;;
+        t)  # number of threads
+            nt=$OPTARG
+            ;;
+        p)  # number of processes
+            np=$OPTARG
             ;;
         :)  # missing argument
             printf "missing argument for -%s\n" "$OPTARG" >&2
@@ -40,14 +48,14 @@ exit
 ;;
 
 n_workers=${1:-4}
-echo "Launching dask scheduler"
-s=`qsub launch-dask-scheduler.sh`
+echo "Launching Dask scheduler"
+s=`qsub launch-dask-scheduler.sh` # launch on a cpu node
 sjob=${s%.*}
 echo ${s}
 
-echo "Launching dask workers (${n_workers})"
+echo "Launching Dask workers (${n_workers})"
 for i in $(seq 1 ${n_workers}); do
-    qsub launch-dask-worker.sh
+    qsub launch-dask-worker.sh # launch on cpu/gpu node
 done
 
 qstat ${sjob}

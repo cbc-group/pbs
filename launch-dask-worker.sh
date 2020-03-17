@@ -8,12 +8,13 @@
 #PBS -m abe
 
 # setup conda environment
-conda activate pangeo
+conda activate pbs
+conda activate --stack ${1}
 
 # Setup dask worker
 SCHEDULER=/glade/scratch/$USER/scheduler.json
 mpirun --np 9 dask-mpi --nthreads 4 \
     --memory-limit 12e9 \
-    --interface ib0 \
-    --no-scheduler --local-directory /glade/scratch/$USER \
+#    --interface ib0 \
+    --no-scheduler --local-directory /scratch/$USER \
     --scheduler-file=$SCHEDULER

@@ -15,7 +15,7 @@
 # setup conda environment
 conda activate pangeo
 
-SCHEDULER=/glade/scratch/$USER/scheduler.json
+SCHEDULER=$HOME/scheduler.json
 rm -f $SCHEDULER
 mpirun --np 9 dask-mpi --nthreads 4 \
     --memory-limit 12e9 \

@@ -54,9 +54,12 @@ if [ "$#" -ne 2 ]; then
     exit 1
 fi
 
+# ensure jobs know where to find conda
+conda=`which conda`
+
 n_workers=${1}
 echo "Launching Dask scheduler"
-s=`qsub launch-dask-scheduler.sh` # launch on a cpu node
+s=`qsub -v conda=$conda launch-dask-scheduler.sh` # launch on a cpu node
 sjob=${s%.*}
 echo ${s}
 
@@ -64,6 +67,7 @@ env_name=${2}
 echo "Launching Dask workers (${n_workers}) with \"$env_name\""
 for i in $(seq 1 ${n_workers}); do
     qsub \
+        -v conda=$conda
         -v nprocs=$nprocs,nthreads=$nthreads,env_name=$env_name \
         # launch on cpu/gpu node
         -q "$queue" \

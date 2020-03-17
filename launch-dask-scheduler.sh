@@ -10,7 +10,9 @@
 # -m    define mail message condition, abort/begin/terminate
 
 # setup conda environment
-conda activate pbs
+echo "conda @ $conda"
+
+$conda activate pbs
 
 SCHEDULER=$HOME/scheduler.json
 rm -f $SCHEDULER

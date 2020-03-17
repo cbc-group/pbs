@@ -54,9 +54,6 @@ if [ "$#" -ne 2 ]; then
     exit 1
 fi
 
-echo "nt=$nthreads,np=$nprocs"
-
-[]
 n_workers=${1}
 echo "Launching Dask scheduler"
 s=`qsub launch-dask-scheduler.sh` # launch on a cpu node

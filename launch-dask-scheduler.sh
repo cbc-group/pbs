@@ -9,10 +9,8 @@
 # -j    join standard output/error stream
 # -m    define mail message condition, abort/begin/terminate
 
-# setup conda environment
-echo "conda @ $conda"
-
-$conda activate pbs
+export PATH=$PATH:$PBS_O_PATH
+conda activate pbs
 
 SCHEDULER=$HOME/scheduler.json
 rm -f $SCHEDULER

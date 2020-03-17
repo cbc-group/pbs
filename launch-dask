@@ -66,7 +66,7 @@ env_name=${2}
 echo "Launching Dask workers (${n_workers}) with \"$env_name\""
 for i in $(seq 1 ${n_workers}); do
     qsub \
-        -v conda_base=$conda_base\
+        -v conda_base=$conda_base \
         -v nprocs=$nprocs,nthreads=$nthreads,env_name=$env_name \
         # launch on cpu/gpu node
         -q "$queue" \

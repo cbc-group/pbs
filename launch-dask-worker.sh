@@ -15,7 +15,7 @@ conda activate --stack "${env_name}"
 SCHEDULER=$HOME/scheduler.json
 
 dask-worker \
-    --nprocs ${nprocs}
+    --nprocs ${nprocs} \
     --nthreads ${nthreads} \
     --memory-limit 16e9 \
     # network interface

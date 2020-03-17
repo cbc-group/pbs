@@ -1,0 +1,74 @@
+#!/bin/bash
+set -e
+
+display_help() {
+    echo "Usage: $(basename "$0") [-h] [-q queue] N_WORKERS ENV" 
+    echo "  The utility that launch a Dask cluster through PBS."
+    echo "  The answer to the ultimate question of life, the universe and everything."
+    echo
+    echo "  Options:"
+    echo "    -h    display this help and exit"
+    echo "    -q    queue"
+    echo
+}
+
+queue="gpu"
+while getopts 'hq:' option; do
+    case "$option" in
+        h)  # help
+            display_help
+            exit
+            ;;
+        q)  # select a non-default queue
+            queue="$OPTARG"
+            ;;
+        :)  # missing argument
+            printf "missing argument for -%s\n" "$OPTARG" >&2
+            display_help
+            exit 1
+            ;;
+        \?) # illegal option
+            printf "illegal option: -%s\n" "$OPTARG" >&2
+            display_help
+            exit 1
+            ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+exit
+;;
+
+n_workers=${1:-4}
+echo "Launching dask scheduler"
+s=`qsub launch-dask-scheduler.sh`
+sjob=${s%.*}
+echo ${s}
+
+echo "Launching dask workers (${n_workers})"
+for i in $(seq 1 ${n_workers}); do
+    qsub launch-dask-worker.sh
+done
+
+qstat ${sjob}
+
+# block until the scheduler job starts
+while true; do
+    status=`qstat ${sjob} | tail -n 1`
+    echo ${status}
+    if [[ ${status} =~ " R " ]]; then
+        break
+    fi
+    sleep 1
+done
+
+if [[ -z $WORKDIR ]]; then
+    WORKDIR=/glade/scratch/$USER
+fi
+
+default=/glade/p/work/$USER
+notebook=${2:-$default}
+echo "Setting up Jupyter Lab, Notebook dir: ${notebook}"
+source activate pangeo
+./setup-jlab.py --log_level=DEBUG --jlab_port=8877 --dash_port=8878 \
+    --notebook_dir $notebook --scheduler_file $WORKDIR/scheduler.json

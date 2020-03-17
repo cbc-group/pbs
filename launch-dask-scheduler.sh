@@ -28,4 +28,4 @@ dask-scheduler \
 #    --interface ib0 \
     # local cache directory for the worker
     --local-directory /scratch/$USER \
-    --scheduler-file=$SCHEDULER
+    --scheduler-file $SCHEDULER

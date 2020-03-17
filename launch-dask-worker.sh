@@ -18,8 +18,5 @@ dask-worker \
     --nprocs ${nprocs} \
     --nthreads ${nthreads} \
     --memory-limit 16e9 \
-    # network interface
-#    --interface ib0 \
-    # local cache directory for the worker
     --local-directory /scratch/$USER \
     --scheduler-file $SCHEDULER

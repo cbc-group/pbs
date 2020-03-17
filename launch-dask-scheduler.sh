@@ -24,8 +24,5 @@ rm -f $SCHEDULER
 # scheulder on rank 0, workers/nannies on remaining ranks
 # so we restrict to 1 rank for scheduler job
 dask-scheduler \
-    # network interface
-#    --interface ib0 \
-    # local cache directory for the worker
     --local-directory /scratch/$USER \
     --scheduler-file $SCHEDULER

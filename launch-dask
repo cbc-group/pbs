@@ -44,16 +44,17 @@ while getopts 'hq:t:p:' option; do
 done
 shift $((OPTIND - 1))
 
-n_workers=${1:-4}
+n_workers=${1}
 echo "Launching Dask scheduler"
 s=`qsub launch-dask-scheduler.sh` # launch on a cpu node
 sjob=${s%.*}
 echo ${s}
 
-echo "Launching Dask workers (${n_workers})"
+env_name=${2}
+echo "Launching Dask workers (${n_workers}) with \"$env_name\""
 for i in $(seq 1 ${n_workers}); do
     qsub \
-        -v nprocs=$nprocs,nthreads=$nthreads \
+        -v nprocs=$nprocs,nthreads=$nthreads,env_name=$env_name \
         # launch on cpu/gpu node
         -q "$queue" \
         launch-dask-worker.sh 

@@ -4,9 +4,11 @@
 #PBS -j oe
 #PBS -m abe
 
+export PATH=$PATH:$PBS_O_PATH
+
 # setup conda environment
-$conda activate pbs
-$conda activate --stack "$env_name"
+conda activate pbs
+conda activate --stack "$env_name"
 
 # Setup dask worker
 SCHEDULER=$HOME/scheduler.json

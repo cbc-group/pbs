@@ -2,7 +2,7 @@
 set -e
 
 display_help() {
-    echo "Usage: $(basename "$0") [-h] [-q queue] N_WORKERS ENV" 
+    echo "Usage: $(basename "$0") [-h] [-q queue] N_WORKERS ENV_NAME" 
     echo "  The utility that launch a Dask cluster through PBS."
     echo "  The answer to the ultimate question of life, the universe and everything."
     echo
@@ -13,8 +13,8 @@ display_help() {
 }
 
 queue="gpu"
-nt=4
-np=8
+nthreads=4
+nprocs=1 # each gpu can only occupied by 1 process
 while getopts 'hq:t:p:' option; do
     case "$option" in
         h)  # help
@@ -24,11 +24,11 @@ while getopts 'hq:t:p:' option; do
         q)  # select a non-default queue
             queue="$OPTARG"
             ;;
-        t)  # number of threads
-            nt=$OPTARG
+        t)  # number of threads per process
+            nthreads=$OPTARG
             ;;
-        p)  # number of processes
-            np=$OPTARG
+        p)  # number of processes per worker
+            nprocs=$OPTARG
             ;;
         :)  # missing argument
             printf "missing argument for -%s\n" "$OPTARG" >&2
@@ -44,9 +44,6 @@ while getopts 'hq:t:p:' option; do
 done
 shift $((OPTIND - 1))
 
-exit
-;;
-
 n_workers=${1:-4}
 echo "Launching Dask scheduler"
 s=`qsub launch-dask-scheduler.sh` # launch on a cpu node
@@ -55,7 +52,11 @@ echo ${s}
 
 echo "Launching Dask workers (${n_workers})"
 for i in $(seq 1 ${n_workers}); do
-    qsub launch-dask-worker.sh # launch on cpu/gpu node
+    qsub \
+        -v nprocs=$nprocs,nthreads=$nthreads \
+        # launch on cpu/gpu node
+        -q "$queue" \
+        launch-dask-worker.sh 
 done
 
 qstat ${sjob}
@@ -69,6 +70,9 @@ while true; do
     fi
     sleep 1
 done
+
+exit
+;;
 
 if [[ -z $WORKDIR ]]; then
     WORKDIR=/glade/scratch/$USER

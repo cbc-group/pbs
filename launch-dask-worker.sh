@@ -1,20 +1,25 @@
 #!/bin/bash
 #PBS -N dask-worker
-#PBS -q economy
-#PBS -A UCLB0022
-#PBS -l select=1:ncpus=36:mpiprocs=9:ompthreads=4:mem=109GB
-#PBS -l walltime=11:59:00
+#PBS -l walltime=06:00:00
 #PBS -j oe
 #PBS -m abe
 
 # setup conda environment
 conda activate pbs
-conda activate --stack ${1}
+conda activate --stack "$env_name"
 
 # Setup dask worker
-SCHEDULER=/glade/scratch/$USER/scheduler.json
-mpirun --np 9 dask-mpi --nthreads 4 \
-    --memory-limit 12e9 \
+SCHEDULER=$HOME/scheduler.json
+
+# each worker has a nanny
+nprocs2=$(( 2*$nprocs )) 
+mpirun -n $nprocs2 dask-mpi 
+    --nthreads $nthreads \
+    --memory-limit 16e9 \
+    # network interface
 #    --interface ib0 \
-    --no-scheduler --local-directory /scratch/$USER \
+    # do not include a scheduler, in order to increase an existing cluster
+    --no-scheduler \
+    # local cache directory for the worker
+    --local-directory /scratch/$USER \
     --scheduler-file=$SCHEDULER

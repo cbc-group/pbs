@@ -10,8 +10,8 @@
 # -m    define mail message condition, abort/begin/terminate
 
 # prepare path
-echo "$conda_base"
-source $conda_base/etc/profile.d/conda.sh
+echo "conda_base: ${conda_base}"
+source "${conda_base}/etc/profile.d/conda.sh"
 
 # launch environment
 conda activate pbs

@@ -4,9 +4,10 @@
 #PBS -j oe
 #PBS -m abe
 
-export PATH=$PATH:$PBS_O_PATH
+# prepare path
+source $conda_base/etc/profile.d/conda.sh
 
-# setup conda environment
+# launch environment
 conda activate pbs
 conda activate --stack "$env_name"
 

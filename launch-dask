@@ -77,9 +77,8 @@ for i in $(seq 1 ${n_workers}); do
     echo ".. Worker ${i}"
     qsub \
         -v conda_base=${conda_base},nprocs=${nprocs},nthreads=${nthreads},env_name=${env_name} \
-         # launch on cpu/gpu node
         -q "${queue}" \
-        launch-dask-worker.sh 
+        launch-dask-worker.sh
 done
 
 ##

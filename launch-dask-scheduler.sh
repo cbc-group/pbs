@@ -20,7 +20,8 @@ rm -f $SCHEDULER
 
 # scheulder on rank 0, workers/nannies on remaining ranks
 # so we restrict to 1 rank for scheduler job
-mpirun -n 1 dask-mpi 
+dask-scheduler \ 
+    --nprocs 4
     --nthreads 4 \
     --memory-limit 16e9 \
     # network interface

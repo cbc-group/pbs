@@ -12,6 +12,9 @@ display_help() {
     echo
 }
 
+##
+# ARGUMENTS
+##
 queue="gpu"
 nthreads=4
 nprocs=1 # each gpu can only occupied by 1 process
@@ -54,14 +57,20 @@ if [ "$#" -ne 2 ]; then
     exit 1
 fi
 
+conda_base=$(conda info --base)
+
+##
+# SCHEDULER
+##
 n_workers=${1}
 echo "Launching Dask scheduler"
 s=$(qsub -v conda_base=${conda_base} launch-dask-scheduler.sh) # launch on a cpu node
 sjob=${s%.*}
 echo ${s}
 
-conda_base=$(conda info --base)
-
+##
+# WORKER
+##
 env_name=${2}
 echo "Launching Dask workers (${n_workers}) with \"${env_name}\""
 for i in $(seq 1 ${n_workers}); do
@@ -73,6 +82,9 @@ for i in $(seq 1 ${n_workers}); do
         launch-dask-worker.sh 
 done
 
+##
+# WAIT UNTIL READY
+##
 qstat ${sjob}
 
 # block until the scheduler job starts
@@ -88,6 +100,9 @@ done
 exit
 ;;
 
+##
+# EXTERNAL
+##
 if [[ -z $WORKDIR ]]; then
     WORKDIR=/glade/scratch/$USER
 fi

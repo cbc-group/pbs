@@ -9,12 +9,17 @@
 # -j    join standard output/error stream
 # -m    define mail message condition, abort/begin/terminate
 
+terminate_ssh() {
+    echo "SIGTERM, terminating reverse tunnel"
+    ssh -S $HOME/scheduler.socket -O exit warp
+}
+
 # prepare path
 source "${conda_base}/etc/profile.d/conda.sh"
 
 # establish reverse tunnel to the head node
-ssh -fN -R 8786:localhost:8786 warp # scheduler
-ssh -fN -R 8787:localhost:8787 warp # dashboard
+# .. use control file in master mode for control
+ssh -fN -M -S $HOME/scheduler.socket -R 8786:localhost:8786 warp # scheduler
 
 # launch environment
 conda activate pbs

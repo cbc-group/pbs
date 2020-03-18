@@ -6,6 +6,10 @@
 # prepare path
 source "${conda_base}/etc/profile.d/conda.sh"
 
+# restrict gpu id
+export CUDA_VISIBLE_DEVICES=$(/opt/bin/get_gpuid)
+echo "Assigned GPU $CUDA_VISIBLE_DEVICES"
+
 # launch environment
 conda activate pbs
 conda activate --stack "${env_name}"

@@ -1,5 +1,4 @@
 #!/bin/bash
-#PBS -N dask-worker
 #PBS -l walltime=06:00:00
 #PBS -j oe
 #PBS -m abe

@@ -21,10 +21,11 @@ trap terminate_ssh SIGTERM
 source "${conda_base}/etc/profile.d/conda.sh"
 
 # establish reverse tunnel to the head node
-# .. use control file in master mode for control
+#   - use control file to close the socket
+#   - since bokeh use websocket later on, ssh tunneling failed somehow 
 ssh -fN \
     -M -S $HOME/scheduler.socket \
-    -R 8786:localhost:8786 -R 8787:localhost:8787 \
+    -R 8786:localhost:8786 \
     warp
 
 # launch environment
@@ -34,6 +35,6 @@ SCHEDULER=$HOME/scheduler.json
 rm -f $SCHEDULER
 
 dask-scheduler \
-    --dashboard --no-show \
+    --no-dashboard \
     --local-directory /scratch/$USER \
     --scheduler-file $SCHEDULER

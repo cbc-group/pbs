@@ -13,7 +13,8 @@
 source "${conda_base}/etc/profile.d/conda.sh"
 
 # establish reverse tunnel to the head node
-ssh -fN -R 8786:localhost:8786 warp
+ssh -fN -R 8786:localhost:8786 warp # scheduler
+ssh -fN -R 8787:localhost:8787 warp # dashboard
 
 # launch environment
 conda activate pbs

@@ -17,6 +17,8 @@ terminate_ssh() {
     rm -f $HOME/dashboard.socket
 }
 
+trap terminate_ssh SIGTERM
+
 # prepare path
 source "${conda_base}/etc/profile.d/conda.sh"
 

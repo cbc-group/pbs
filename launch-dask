@@ -68,6 +68,17 @@ s=$(qsub -v conda_base=${conda_base} launch-dask-scheduler.sh) # launch on a cpu
 sjob=${s%.*}
 echo ${s}
 
+# block until the scheduler job starts
+while true; do
+    status=$(qstat ${sjob} | tail -n 1)
+    echo ${status}
+    if [[ ${status} =~ " R " ]]; then
+        break
+    fi
+    sleep 1
+done
+
+
 ##
 # WORKER
 ##
@@ -78,21 +89,6 @@ for i in $(seq 1 ${n_workers}); do
         -v conda_base=${conda_base},nprocs=${nprocs},nthreads=${nthreads},env_name=${env_name} \
         -q "${queue}" \
         launch-dask-worker.sh
-done
-
-##
-# WAIT UNTIL READY
-##
-qstat ${sjob}
-
-# block until the scheduler job starts
-while true; do
-    status=$(qstat ${sjob} | tail -n 1)
-    echo ${status}
-    if [[ ${status} =~ " R " ]]; then
-        break
-    fi
-    sleep 1
 done
 
 exit

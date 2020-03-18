@@ -71,7 +71,7 @@ echo ${s}
 # block until the scheduler job starts
 while true; do
     status=$(qstat ${sjob} | tail -n 1)
-    echo ${status}
+    echo "... ${status}"
     if [[ ${status} =~ " R " ]]; then
         break
     fi

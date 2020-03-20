@@ -64,7 +64,7 @@ conda_base=$(conda info --base)
 ##
 n_workers=${1}
 echo "Launching Dask scheduler"
-s=$(qsub -v conda_base=${conda_base} launch-dask-scheduler.sh) # launch on a cpu node
+s=$(qsub -v conda_base=${conda_base} -q core12 launch-dask-scheduler.sh) # launch on a cpu node
 sjob=${s%.*}
 echo ${s}
 

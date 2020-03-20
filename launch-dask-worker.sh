@@ -1,5 +1,5 @@
 #!/bin/bash
-#PBS -l walltime=06:00:00
+#PBS -l nodes=1:ppn=6
 #PBS -j oe
 #PBS -m abe
 
@@ -14,12 +14,16 @@ echo "Assigned GPU $CUDA_VISIBLE_DEVICES"
 conda activate pbs
 conda activate --stack "${env_name}"
 
-# Setup dask worker
+# setup dask scheduler 
 SCHEDULER=$HOME/scheduler.json
+
+# create worker space
+SPACE=/ctmp/scratch/$USER/dask-worker-space
+mkdir -p ${SPACE}
 
 dask-worker \
     --nprocs ${nprocs} \
     --nthreads ${nthreads} \
     --memory-limit 16e9 \
-    --local-directory /scratch/$USER \
+    --local-directory ${SPACE} \
     --scheduler-file $SCHEDULER

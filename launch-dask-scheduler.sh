@@ -35,7 +35,7 @@ SCHEDULER=$HOME/scheduler.json
 rm -f $SCHEDULER
 
 # create worker space
-SPACE=/ctmp/scratch/$USER/dask-worker-space
+SPACE=/scratch/$USER/dask-worker-space
 mkdir -p ${SPACE}
 
 dask-scheduler \

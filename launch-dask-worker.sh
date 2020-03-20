@@ -19,7 +19,7 @@ conda activate --stack "${env_name}"
 SCHEDULER=$HOME/scheduler.json
 
 # create worker space
-SPACE=/ctmp/scratch/$USER/dask-worker-space
+SPACE=/scratch/$USER/dask-worker-space
 mkdir -p ${SPACE}
 
 dask-worker \

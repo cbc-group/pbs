@@ -91,10 +91,12 @@ fi
 
 env_name=${2}
 echo "Launching Dask workers (${n_workers}) with \"${env_name}\""
-qsub \
-    -t ${n_workers} \
-    -N "dask-worker" \
-    -v conda_base=${conda_base},nprocs=${nprocs},nthreads=${nthreads},env_name=${env_name} \
-    -q "${queue}" \
-    -l nodes=1:ppn=${ppn} \
-    launch-dask-worker.sh
+# NOTE we cannot use job array, since get_gpuid will fail to separate across nodes
+for i in $(seq 1 ${n_workers}); do
+    qsub \
+        -N "dask-worker-${i}" \
+        -v conda_base=${conda_base},nprocs=${nprocs},nthreads=${nthreads},env_name=${env_name} \
+        -q "${queue}" \
+        -l nodes=1:ppn=${ppn} \
+        launch-dask-worker.sh
+done

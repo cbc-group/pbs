@@ -1,6 +1,6 @@
 #!/bin/bash
 #PBS -N dask-scheduler
-#PBS -l walltime=06:00:00
+#PBS -l nodes=1:ppn=12
 #PBS -j oe
 #PBS -m abe
 
@@ -34,7 +34,11 @@ conda activate pbs
 SCHEDULER=$HOME/scheduler.json
 rm -f $SCHEDULER
 
+# create worker space
+SPACE=/ctmp/scratch/$USER/dask-worker-space
+mkdir -p ${SPACE}
+
 dask-scheduler \
     --no-dashboard \
-    --local-directory /scratch/$USER \
+    --local-directory ${SPACE} \
     --scheduler-file $SCHEDULER

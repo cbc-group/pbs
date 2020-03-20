@@ -26,6 +26,7 @@ source "${conda_base}/etc/profile.d/conda.sh"
 ssh -fN \
     -M -S $HOME/scheduler.socket \
     -R 8786:localhost:8786 \
+    -R 8787:localhost:8787 \
     warp
 
 # launch environment
@@ -39,6 +40,5 @@ SPACE=/scratch/$USER/dask-worker-space
 mkdir -p ${SPACE}
 
 dask-scheduler \
-    --no-dashboard \
     --local-directory ${SPACE} \
     --scheduler-file $SCHEDULER

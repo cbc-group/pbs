@@ -1,5 +1,5 @@
 #!/bin/bash
-#PBS -l nodes=1:ppn=6
+#PBS -l nodes=1:ppn=4
 #PBS -j oe
 #PBS -m abe
 

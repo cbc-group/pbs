@@ -6,9 +6,11 @@
 # prepare path
 source "${conda_base}/etc/profile.d/conda.sh"
 
-# restrict gpu id
-export CUDA_VISIBLE_DEVICES=$(/opt/bin/get_gpuid)
-echo "Assigned GPU $CUDA_VISIBLE_DEVICES"
+# restrict gpu id if this is a gpu worker
+if [[ $PBS_O_QUEUE == gpu* ]]; then
+    export CUDA_VISIBLE_DEVICES=$(/opt/bin/get_gpuid)
+    echo "Assigned GPU $CUDA_VISIBLE_DEVICES"
+fi
 
 # launch environment
 conda activate pbs

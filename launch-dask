@@ -82,9 +82,11 @@ done
 ##
 # WORKER
 ##
+ppn=6
 if [[ ${queue} == gpu* ]]; then
     echo "A GPU can only bound to 1 process, override nprocs"
     nprocs=1
+    ppn=1
 fi
 
 env_name=${2}
@@ -95,7 +97,7 @@ for i in $(seq 1 ${n_workers}); do
         -N "dask-worker-${i}" \
         -v conda_base=${conda_base},nprocs=${nprocs},nthreads=${nthreads},env_name=${env_name} \
         -q "${queue}" \
-        -l nodes=1:ppn=6 \
+        -l nodes=1:ppn=${ppn} \
         launch-dask-worker.sh
 done
 

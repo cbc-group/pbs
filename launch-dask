@@ -8,7 +8,10 @@ display_help() {
     echo
     echo "  Options:"
     echo "    -h    display this help and exit"
-    echo "    -q    queue"
+    echo "    -q    queue to submit"
+    echo "    -p    processes per worker"
+    echo "    -t    threads per worker"
+    echo "    -m    memory limit per worker"
     echo
 }
 
@@ -18,7 +21,8 @@ display_help() {
 queue="gpu"
 nthreads=4
 nprocs=4
-while getopts ':hq:t:p:' option; do
+mem="16e9"
+while getopts ':hq:t:p:m:' option; do
     case "${option}" in
         q)  # select a non-default queue
             queue="$OPTARG"
@@ -28,6 +32,9 @@ while getopts ':hq:t:p:' option; do
             ;;
         p)  # number of processes per worker
             nprocs=$OPTARG
+            ;;
+        m)  # memory per worker
+            mem="$OPTARG"
             ;;
 
         # by having ":...", we want to handle errors ourselves
@@ -95,7 +102,7 @@ echo "Launching Dask workers (${n_workers}) with \"${env_name}\""
 for i in $(seq 1 ${n_workers}); do
     qsub \
         -N "dask-worker-${i}" \
-        -v conda_base=${conda_base},nprocs=${nprocs},nthreads=${nthreads},env_name=${env_name} \
+        -v conda_base=${conda_base},nprocs=${nprocs},nthreads=${nthreads},mem=${mem},env_name=${env_name} \
         -q "${queue}" \
         -l nodes=1:ppn=${ppn} \
         launch-dask-worker.sh

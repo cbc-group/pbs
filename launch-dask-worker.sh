@@ -25,6 +25,6 @@ mkdir -p ${SPACE}
 dask-worker \
     --nprocs ${nprocs} \
     --nthreads ${nthreads} \
-    --memory-limit 16e9 \
+    --memory-limit ${mem} \
     --local-directory ${SPACE} \
     --scheduler-file $SCHEDULER

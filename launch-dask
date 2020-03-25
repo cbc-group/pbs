@@ -19,13 +19,17 @@ display_help() {
 # ARGUMENTS
 ##
 queue="gpu"
+nanny=0
 nthreads=4
 nprocs=4
 mem="16e9"
-while getopts ':hq:t:p:m:' option; do
+while getopts ':hnq:t:p:m:' option; do
     case "${option}" in
         q)  # select a non-default queue
             queue="$OPTARG"
+            ;;
+        n)  # nanny
+            nanny=1
             ;;
         t)  # number of threads per process
             nthreads=$OPTARG
@@ -102,7 +106,7 @@ echo "Launching Dask workers (${n_workers}) with \"${env_name}\""
 for i in $(seq 1 ${n_workers}); do
     qsub \
         -N "dask-worker-${i}" \
-        -v conda_base=${conda_base},nprocs=${nprocs},nthreads=${nthreads},mem=${mem},env_name=${env_name} \
+        -v conda_base=${conda_base},nanny=${nanny},nprocs=${nprocs},nthreads=${nthreads},mem=${mem},env_name=${env_name} \
         -q "${queue}" \
         -l nodes=1:ppn=${ppn} \
         launch-dask-worker.sh

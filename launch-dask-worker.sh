@@ -22,9 +22,16 @@ SCHEDULER=$HOME/scheduler.json
 SPACE=/scratch/$USER/dask-worker-space
 mkdir -p ${SPACE}
 
-dask-worker \
-    --nprocs ${nprocs} \
-    --nthreads ${nthreads} \
-    --memory-limit ${mem} \
-    --local-directory ${SPACE} \
+worker_options=(
+    --nprocs ${nprocs}
+    --nthreads ${nthreads}
+    --memory-limit ${mem}
+    --local-directory ${SPACE}
     --scheduler-file $SCHEDULER
+)
+if (( ${nanny} == 0 )); then
+    echo "this worker is a grown-up, requires NO nanny"
+    worker_options+=( --no-nanny )
+fi
+
+dask-worker "${worker_options[@]}"
